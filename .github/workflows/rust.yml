@@ -1,0 +1,68 @@
+name: GitHub Classroom Workflow
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'README.md'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  TZ: Asia/Shanghai # 设置时区
+
+jobs:
+  build:
+    name: Autograding
+    runs-on: ubuntu-latest
+    outputs:
+      details: ${{ steps.autograding.outputs.details }}
+      points: ${{ steps.autograding.outputs.points}}
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run tests
+      run: cargo test --test cicv --verbose
+    - uses: yfblock/os-autograding@master
+      id: autograding
+      with:
+        outputFile: .github/result/check_result.json
+    - name: Generate summary JSON
+      env:
+        course_id: ${{ secrets.RUSTLINGS_2024_AUTUMN_COURSE_ID }}
+      run: |
+        outfile=".github/result/check_result.json"
+        summary_file=".github/result/summary.json"
+
+        # 提取需要的值
+        total_exercations=$(jq '.statistics.total_exercations' $outfile)
+        total_succeeds=$(jq '.statistics.total_succeeds' $outfile)
+        github_user="${{ github.actor }}"
+
+        # 生成新的 JSON 内容
+        new_json=$(jq -n \
+          --arg channel "github" \
+          --argjson courseId "$course_id" \
+          --arg ext "aaa" \
+          --arg name "$github_user" \
+          --argjson score "$total_succeeds" \
+          --argjson totalScore "$total_exercations" \
+          '{channel: $channel, courseId: $courseId, ext: $ext, name: $name, score: $score, totalScore: $totalScore}')
+
+        # 保存新的 JSON 文件
+        echo "$new_json" > $summary_file
+
+        # 打印新的 JSON 文件到终端
+        cat $summary_file
+    - name: Post summary JSON to remote API
+      env:
+        post_api: ${{ secrets.RUSTLINGS_2024_AUTUMN_POST_API }}
+      run: |
+        summary_file=".github/result/summary.json"
+        curl -X POST https://"$post_api" \
+          -H "accept: application/json;charset=utf-8" \
+          -H "Content-Type: application/json" \
+          -d "$(cat $summary_file)" \
+          -v
