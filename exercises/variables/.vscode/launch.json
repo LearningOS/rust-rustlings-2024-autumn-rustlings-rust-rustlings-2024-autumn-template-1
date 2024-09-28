@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(gdb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/home/rustOS/rust-rustlings-2024-autumn-noobyalan/target/debug/rustlings", // 确保路径正确
+            "args": ["example.rs"], // 这里可以添加你的程序参数
+            "stopAtEntry": false,
+            "cwd": "/home/rustOS/rust-rustlings-2024-autumn-noobyalan/exercises", // 设置为exercises文件夹
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}
