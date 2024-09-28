@@ -5,12 +5,13 @@
   "updateContentCommand": "cargo build",
   "postCreateCommand": "",
   "postAttachCommand": {
-    "server": "rustlings watch"
+    //    "server": "rustlings watch"
   },
   "customizations": {
     "vscode": {
       "extensions": [
-        "rust-lang.rust-analyzer"
+        "rust-lang.rust-analyzer",
+        "vadimcn.vscode-lldb"
       ]
     }
   }
