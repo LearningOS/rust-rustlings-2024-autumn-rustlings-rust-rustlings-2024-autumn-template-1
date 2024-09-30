@@ -7,12 +7,11 @@
 // Execute `rustlings hint modules2` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
 
 mod delicious_snacks {
     // TODO: Fix these use statements
-    use self::fruits::PEAR as ???
-    use self::veggies::CUCUMBER as ???
+    pub use self::fruits::PEAR as fruit;   // 将 fruits 模块中的 PEAR 公开，并为其起一个别名 `fruit`
+    pub use self::veggies::CUCUMBER as veggie;  // 将 veggies 模块中的 CUCUMBER 公开，并为其起一个别名 `veggie`
 
     mod fruits {
         pub const PEAR: &'static str = "Pear";
@@ -30,5 +29,7 @@ fn main() {
         "favorite snacks: {} and {}",
         delicious_snacks::fruit,
         delicious_snacks::veggie
+
+        //// 使用从 delicious_snacks 模块中导出的 fruit 和 veggie 常量
     );
 }
