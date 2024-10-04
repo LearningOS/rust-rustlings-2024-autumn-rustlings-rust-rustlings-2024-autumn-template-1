@@ -11,7 +11,7 @@ struct ColorClassicStruct {
     pub green:i32,
     pub blue:i32,
 }
-
+//keyima
 struct ColorTupleStrgituct(i32,i32,i32);
 
 #[derive(Debug)]
