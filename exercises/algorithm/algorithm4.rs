@@ -4,9 +4,6 @@
 */
 
 //I AM NOT DONE
-use std::cmp::Ordering;
-use std::fmt::Debug;
-
 
 #[derive(Debug)]
 struct TreeNode<T>
@@ -51,12 +48,19 @@ where
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
         //TODO
+        
     }
 
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
         //TODO
-        true
+        
+        match self.root {
+            Some(ref node) => {
+                node.search(value)
+            },
+            None => false,
+        }
     }
 }
 
@@ -67,6 +71,9 @@ where
     // Insert a node into the tree
     fn insert(&mut self, value: T) {
         //TODO
+        self.value = value;
+        self.left = None;
+        self.right = None;
     }
 }
 
