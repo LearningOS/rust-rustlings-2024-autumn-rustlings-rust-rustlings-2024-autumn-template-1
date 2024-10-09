@@ -3,8 +3,6 @@
 	This problem requires you to implement a basic interface for a binary tree
 */
 
-//I AM NOT DONE
-
 #[derive(Debug)]
 struct TreeNode<T>
 where
@@ -48,19 +46,35 @@ where
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
         //TODO
-        
+        match self.root {
+            Some(ref mut node) => {
+                (*node).insert(value);
+            },
+            None => {
+                self.root = Some(Box::new(TreeNode::new(value)));
+            },
+            
+        }
     }
 
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
         //TODO
-        
-        match self.root {
-            Some(ref node) => {
-                node.search(value)
-            },
-            None => false,
+        fn search_node<T:Ord>(node :&Option<Box<TreeNode<T>>>,value: T) -> bool{
+            match node {
+                Some(ref node) =>{
+                    if node.value == value {
+                        return true
+                    }else if node.value > value {
+                        return search_node(&node.left,value)
+                    }else {
+                        return search_node(&node.right,value)
+                    }
+                },
+                None => return false,
+            }
         }
+        search_node(&self.root,value)
     }
 }
 
@@ -71,9 +85,17 @@ where
     // Insert a node into the tree
     fn insert(&mut self, value: T) {
         //TODO
-        self.value = value;
-        self.left = None;
-        self.right = None;
+        if value < self.value {
+            match self.left {
+                Some(ref mut left_node) => left_node.insert(value),
+                None => self.left = Some(Box::new(TreeNode::new(value))),
+            }
+        } else if value > self.value {
+            match self.right {
+                Some(ref mut right_node) => right_node.insert(value),
+                None => self.right = Some(Box::new(TreeNode::new(value))),
+            }
+        }
     }
 }
 
