@@ -6,9 +6,6 @@
 fn main() {
     let mut res = 42;
     let option = Some(12);
-    match option {
-        i32 => res += x,
-        None => None,
-    };
+    if let Some(x) = option { res += x }
     println!("{}", res);
 }
