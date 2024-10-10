@@ -2,7 +2,7 @@
 	queue
 	This question requires you to use queues to implement the functionality of the stac
 */
-// I AM NOT DONE
+
 
 #[derive(Debug)]
 pub struct Queue<T> {
@@ -16,11 +16,11 @@ impl<T> Queue<T> {
         }
     }
 
-    pub fn enqueue(&mut self, value: T) {
+    pub fn enqueue(&mut self, value: T) {   //入队
         self.elements.push(value)
     }
 
-    pub fn dequeue(&mut self) -> Result<T, &str> {
+    pub fn dequeue(&mut self) -> Result<T, &str> {  //删除第一个元素
         if !self.elements.is_empty() {
             Ok(self.elements.remove(0usize))
         } else {
@@ -28,18 +28,18 @@ impl<T> Queue<T> {
         }
     }
 
-    pub fn peek(&self) -> Result<&T, &str> {
+    pub fn peek(&self) -> Result<&T, &str> {    //查看第一个元素
         match self.elements.first() {
             Some(value) => Ok(value),
             None => Err("Queue is empty"),
         }
     }
 
-    pub fn size(&self) -> usize {
+    pub fn size(&self) -> usize {   //队列长度
         self.elements.len()
     }
 
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(&self) -> bool {    //判断队列是否为空
         self.elements.is_empty()
     }
 }
@@ -67,15 +67,35 @@ impl<T> myStack<T> {
         }
     }
     pub fn push(&mut self, elem: T) {
+        self.q1.enqueue(elem);
         //TODO
     }
     pub fn pop(&mut self) -> Result<T, &str> {
         //TODO
-		Err("Stack is empty")
+        if self.q1.is_empty() {
+            return Err("Stack is empty");
+        }
+        else {
+            while self.q1.size() > 1 {
+                let elem = self.q1.dequeue().unwrap();
+                self.q2.enqueue(elem);
+            }
+            let result = self.q1.dequeue().unwrap();
+            while self.q2.size() > 0 {
+                let elem = self.q2.dequeue().unwrap();
+                self.q1.enqueue(elem);
+            }
+            return Ok(result);
+        }
     }
     pub fn is_empty(&self) -> bool {
 		//TODO
-        true
+        if self.q1.is_empty() {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }
 

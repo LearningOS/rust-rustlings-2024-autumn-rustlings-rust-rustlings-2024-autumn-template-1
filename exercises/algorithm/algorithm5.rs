@@ -2,8 +2,6 @@
 	bfs
 	This problem requires you to implement a basic BFS algorithm
 */
-
-//I AM NOT DONE
 use std::collections::VecDeque;
 
 // Define a graph
@@ -15,7 +13,7 @@ impl Graph {
     // Create a new graph with n vertices
     fn new(n: usize) -> Self {
         Graph {
-            adj: vec![vec![]; n],
+            adj: vec![vec![]; n],   
         }
     }
 
@@ -29,8 +27,23 @@ impl Graph {
     fn bfs_with_return(&self, start: usize) -> Vec<usize> {
         
 		//TODO
-
+        let mut visited = vec![false; self.adj.len()];
+        let mut queue: VecDeque<usize> = VecDeque::new();
+        queue.push_back(start);
         let mut visit_order = vec![];
+        while queue.len() > 0 {
+            let node = queue.pop_front().unwrap();
+            if visited[node] {
+                continue;
+            }
+            visited[node] = true;
+            visit_order.push(node);
+            for &neighbour in &self.adj[node] {
+                if !visited[neighbour] {
+                    queue.push_back(neighbour);
+                }
+            }
+        }
         visit_order
     }
 }
