@@ -2,7 +2,7 @@
 	double linked list reverse
 	This problem requires you to reverse a doubly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -73,8 +73,48 @@ impl<T> LinkedList<T> {
         }
     }
 	pub fn reverse(&mut self){
-		// TODO
-	}
+        let mut current = self.start;  
+        let mut next = None;  
+        let mut prev = None;  
+  
+        while let Some(current_ptr) = current {  
+            let current_node_ptr = current_ptr.as_ptr();  
+  
+            // 保存下一个节点的指针  
+            next = unsafe { (*current_node_ptr).next };  
+  
+            // 交换 prev 和 next 指针  
+            unsafe {  
+                (*current_node_ptr).next = prev;  
+                (*current_node_ptr).prev = next;  
+            }  
+  
+            // 移动到下一个节点  
+            prev = Some(current_ptr);  
+            current = next;  
+        }  
+  
+        // 更新链表的头和尾指针  
+        self.start = prev;  
+        if let Some(end_ptr) = self.start {  
+            // 最后一个节点的 next 应该是 None  
+            if let Some(last_next) = unsafe { (*end_ptr.as_ptr()).prev } {  
+                unsafe {  
+                    (*last_next.as_ptr()).next = None;  
+                }  
+            }  
+        }  
+        self.end = if let Some(start_ptr) = self.start {  
+            if let Some(start_prev) = unsafe { (*start_ptr.as_ptr()).prev } {  
+                Some(start_prev)  
+            } else {  
+                None // 如果链表只有一个节点，start_prev 应该是 None  
+            }  
+        } else {  
+            None // 链表为空  
+        };  
+    }  
+	
 }
 
 impl<T> Display for LinkedList<T>
