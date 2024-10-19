@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -29,13 +29,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: std::cmp::PartialOrd> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: std::cmp::PartialOrd> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -71,13 +71,51 @@ impl<T> LinkedList<T> {
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
-		//TODO
+        let mut node_a=list_a.start;
+        let mut node_b=list_b.start;
+        let mut list_temp=Self::merge_two_lists(node_a,node_b);
+        let mut length = 0;  
+        let mut current = list_temp.as_ref().cloned();  
+        let mut tail = None;  
+      
+        while let Some(node_ptr) = current.take() {  
+            tail = Some(node_ptr.clone()); // Update tail to the current node  
+            current = unsafe { (*node_ptr.as_ptr()).next.as_ref() }.cloned(); // Move to the next node  
+            length += 1;  
+        } ;
 		Self {
-            length: 0,
-            start: None,
-            end: None,
+            length: length,
+            start: list_temp,
+            end: tail,
         }
 	}
+
+    pub fn merge_two_lists(l1: Option<NonNull<Node<T>>>, l2: Option<NonNull<Node<T>>>, ) -> Option<NonNull<Node<T>>> {  
+        match (l1, l2) {  
+            (None, None) => None,  
+            (None, Some(mut r)) => Some(  r),  
+            (Some(mut l), None) => Some( l),  
+            (Some(mut l), Some(mut r)) => {  
+                unsafe{
+                if l.as_ref().val <= r.as_ref().val {  
+                    let next = Self::merge_two_lists(l.as_ref().next, Some(r));  
+                    unsafe {  
+                        let mut l_ptr = l.as_mut();  
+                        l_ptr.next = next;  
+                        Some(NonNull::new_unchecked(l_ptr))  
+                    }  
+                } else {  
+                    let next = Self::merge_two_lists(Some(l), r.as_ref().next);  
+                    unsafe {  
+                        let mut r_ptr = r.as_mut();  
+                        r_ptr.next = next;  
+                        Some(NonNull::new_unchecked(r_ptr))  
+                    }  
+                }  
+            }
+        }
+    }
+}
 }
 
 impl<T> Display for LinkedList<T>

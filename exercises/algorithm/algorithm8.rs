@@ -2,8 +2,8 @@
 	queue
 	This question requires you to use queues to implement the functionality of the stac
 */
-// I AM NOT DONE
 
+use std::mem::swap;
 #[derive(Debug)]
 pub struct Queue<T> {
     elements: Vec<T>,
@@ -67,15 +67,22 @@ impl<T> myStack<T> {
         }
     }
     pub fn push(&mut self, elem: T) {
-        //TODO
+        self.q1.enqueue(elem);
     }
     pub fn pop(&mut self) -> Result<T, &str> {
-        //TODO
-		Err("Stack is empty")
-    }
+        if self.q1.is_empty(){
+            return Err("Stack is empty")
+        }
+        while self.q1.size()>1{
+            let e=self.q1.dequeue().unwrap();
+            self.q2.enqueue(e);
+        }
+        let pop_value=self.q1.dequeue().unwrap();
+        swap(&mut self.q1,&mut self.q2);
+        Ok(pop_value)
+    } 
     pub fn is_empty(&self) -> bool {
-		//TODO
-        true
+		self.q1.is_empty() && self.q2.is_empty()
     }
 }
 
