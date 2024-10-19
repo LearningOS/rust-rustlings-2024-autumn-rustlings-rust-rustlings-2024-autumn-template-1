@@ -3,7 +3,7 @@
 	This problem requires you to implement a sorting algorithm
 	you can use bubble sorting, insertion sorting, heap sorting, etc.
 */
-
+//
 
 fn sort<T: Ord>(array: &mut [T]) {
     let len = array.len();
