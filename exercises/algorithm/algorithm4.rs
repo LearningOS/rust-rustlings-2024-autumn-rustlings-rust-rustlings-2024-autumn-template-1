@@ -3,7 +3,7 @@
 	This problem requires you to implement a basic interface for a binary tree
 */
 
-//I AM NOT DONE
+
 use std::cmp::Ordering;
 use std::fmt::Debug;
 
@@ -37,6 +37,10 @@ where
             right: None,
         }
     }
+    pub fn create(value:T)->Option<Box<TreeNode<T>>>{
+        let root = TreeNode::<T>::new(value) ; 
+        Some(Box::<TreeNode<T>>::new(root)) 
+    }
 }
 
 impl<T> BinarySearchTree<T>
@@ -47,16 +51,41 @@ where
     fn new() -> Self {
         BinarySearchTree { root: None }
     }
-
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
-        //TODO
+        if self.root.is_none()
+        {
+            self.root =TreeNode::<T>::create(value);
+            return ();
+        }
+        TreeNode::<T>::insert( self.root.as_mut().unwrap(),value);
+
+
     }
 
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
-        //TODO
-        true
+        if self.root.is_none() 
+        {
+            return false ;
+        }
+        let mut p = &self.root;
+        while p.is_some()
+        {
+            if p.as_ref().unwrap().value == value 
+            {
+                return true ;
+            }
+            else if p.as_ref().unwrap().value < value 
+            {
+                p = & p.as_ref().unwrap().left ; 
+            }
+            else 
+            {
+                p = & p.as_ref().unwrap().right ; 
+            }
+        }
+        return false ;
     }
 }
 
@@ -66,7 +95,38 @@ where
 {
     // Insert a node into the tree
     fn insert(&mut self, value: T) {
-        //TODO
+        if self.value == value
+        {
+            return ();
+        }
+        if self.value < value 
+        {
+            if self.left.is_none()
+            {
+                self.left = TreeNode::<T>::create(value) ; 
+                return ();
+            }
+            else
+            {
+                TreeNode::<T>::insert(self.left.as_mut().unwrap(),value) ; 
+                return ();
+            }
+        }
+
+        if self.value > value 
+        {
+            if self.right.is_none()
+            {
+                self.right = TreeNode::<T>::create(value) ;
+                return ();
+            }
+            else
+            {
+                TreeNode::<T>::insert(self.right.as_mut().unwrap(),value) ; 
+                return ();
+            }
+        }
+
     }
 }
 

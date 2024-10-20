@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -69,15 +69,34 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+    pub fn merge(mut list_a: LinkedList<i32>, mut list_b: LinkedList<i32>) -> LinkedList<i32> {
+        let mut merged_list = LinkedList::new();
+        while list_a.start.is_some() &&  list_b.start.is_some() {
+            unsafe {
+                if list_a.start.unwrap().as_ref().val < list_b.start.unwrap().as_ref().val{
+                    merged_list.add(list_a.start.unwrap().as_ref().val);
+                    list_a.start = list_a.start.unwrap().as_ref().next;
+                }
+                else {
+                    merged_list.add(list_b.start.unwrap().as_ref().val);
+                    list_b.start = list_b.start.unwrap().as_ref().next;
+                }
+            }
         }
-	}
+        while list_a.start.is_some(){
+            unsafe{
+                merged_list.add(list_a.start.unwrap().as_ref().val);
+                list_a.start = list_a.start.unwrap().as_ref().next;
+            }
+        }
+        while list_b.start.is_some(){
+            unsafe{
+                merged_list.add(list_b.start.unwrap().as_ref().val);
+                list_b.start = list_b.start.unwrap().as_ref().next;
+            }
+        }
+        merged_list
+    }
 }
 
 impl<T> Display for LinkedList<T>
