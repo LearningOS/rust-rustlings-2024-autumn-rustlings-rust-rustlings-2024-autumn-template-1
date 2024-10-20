@@ -2,14 +2,13 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
 
 pub struct Heap<T>
 where
-    T: Default,
+    T: Default + Clone, // 增加了 Clone 约束
 {
     count: usize,
     items: Vec<T>,
@@ -18,7 +17,7 @@ where
 
 impl<T> Heap<T>
 where
-    T: Default,
+    T: Default + Clone, // 同样在这里增加了 Clone 约束
 {
     pub fn new(comparator: fn(&T, &T) -> bool) -> Self {
         Self {
@@ -37,7 +36,31 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        // 将新元素添加到堆的末尾
+        self.count += 1;
+        if self.count < self.items.len() {
+            self.items[self.count] = value;
+        } else {
+            self.items.push(value);
+        }
+        // 上浮新添加的元素
+        self.up_heap(self.count);
+    }
+
+    fn up_heap(&mut self, idx: usize) {
+        let mut child_idx = idx;
+        let value = &self.items[child_idx].clone(); // 这里使用 clone()
+
+        while child_idx > 1 {
+            let parent_idx = self.parent_idx(child_idx);
+            if (self.comparator)(value, &self.items[parent_idx]) {
+                // 交换父节点和子节点
+                self.items.swap(child_idx, parent_idx);
+                child_idx = parent_idx;
+            } else {
+                break;
+            }
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -57,14 +80,35 @@ where
     }
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
+        let left = self.left_child_idx(idx);
+        let right = self.right_child_idx(idx);
+
+        if right <= self.count && (self.comparator)(&self.items[right], &self.items[left]) {
+            right
+        } else {
+            left
+        }
+    }
+
+    fn down_heap(&mut self, idx: usize) {
+        let mut parent_idx = idx;
+
+        while self.children_present(parent_idx) {
+            let child_idx = self.smallest_child_idx(parent_idx);
+            if (self.comparator)(&self.items[child_idx], &self.items[parent_idx]) {
+                // 交换父节点和最小子节点
+                self.items.swap(parent_idx, child_idx);
+                parent_idx = child_idx;
+            } else {
+                break;
+            }
+        }
     }
 }
 
 impl<T> Heap<T>
 where
-    T: Default + Ord,
+    T: Default + Ord + Clone, // 增加了 Clone 约束
 {
     /// Create a new MinHeap
     pub fn new_min() -> Self {
@@ -79,13 +123,22 @@ where
 
 impl<T> Iterator for Heap<T>
 where
-    T: Default,
+    T: Default + Clone, // 增加了 Clone 约束
 {
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.is_empty() {
+            return None;
+        }
+        // 获取根节点并移除
+        let root = self.items[1].clone(); // 这里使用 clone()
+        // 将最后一个元素移到根节点
+        self.items[1] = self.items[self.count].clone(); // 这里使用 clone()
+        self.count -= 1;
+        // 下沉根节点
+        self.down_heap(1);
+        Some(root)
     }
 }
 
@@ -95,7 +148,7 @@ impl MinHeap {
     #[allow(clippy::new_ret_no_self)]
     pub fn new<T>() -> Heap<T>
     where
-        T: Default + Ord,
+        T: Default + Ord + Clone, // 增加了 Clone 约束
     {
         Heap::new(|a, b| a < b)
     }
@@ -107,7 +160,7 @@ impl MaxHeap {
     #[allow(clippy::new_ret_no_self)]
     pub fn new<T>() -> Heap<T>
     where
-        T: Default + Ord,
+        T: Default + Ord + Clone, // 增加了 Clone 约束
     {
         Heap::new(|a, b| a > b)
     }
@@ -116,6 +169,7 @@ impl MaxHeap {
 #[cfg(test)]
 mod tests {
     use super::*;
+    
     #[test]
     fn test_empty_heap() {
         let mut heap = MaxHeap::new::<i32>();
