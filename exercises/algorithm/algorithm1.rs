@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -69,15 +69,47 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+	pub fn merge(mut list_a: LinkedList<T>, mut list_b: LinkedList<T>) -> Self
+where
+    T: PartialOrd + Clone,
+{
+    let mut merged_list = LinkedList::new();
+
+    let mut a_current = list_a.start;
+    let mut b_current = list_b.start;
+
+    while let (Some(a_node), Some(b_node)) = (a_current, b_current) {
+        unsafe {
+            if (*a_node.as_ptr()).val <= (*b_node.as_ptr()).val {
+                merged_list.add((*a_node.as_ptr()).val.clone()); // 使用 clone 来解决移动问题
+                a_current = (*a_node.as_ptr()).next;
+            } else {
+                merged_list.add((*b_node.as_ptr()).val.clone()); // 使用 clone 来解决移动问题
+                b_current = (*b_node.as_ptr()).next;
+            }
         }
-	}
+    }
+
+    // 将 list_a 剩下的节点加入合并链表中
+    while let Some(a_node) = a_current {
+        unsafe {
+            merged_list.add((*a_node.as_ptr()).val.clone()); // 使用 clone 来解决移动问题
+            a_current = (*a_node.as_ptr()).next;
+        }
+    }
+
+    // 将 list_b 剩下的节点加入合并链表中
+    while let Some(b_node) = b_current {
+        unsafe {
+            merged_list.add((*b_node.as_ptr()).val.clone()); // 使用 clone 来解决移动问题
+            b_current = (*b_node.as_ptr()).next;
+        }
+    }
+
+    merged_list
+}
+
+
 }
 
 impl<T> Display for LinkedList<T>
