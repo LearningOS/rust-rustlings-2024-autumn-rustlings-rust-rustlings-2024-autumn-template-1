@@ -16,7 +16,6 @@
 //
 // Execute `rustlings hint quiz3` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
 
 pub struct ReportCard {
     pub grade: f32,
@@ -26,8 +25,15 @@ pub struct ReportCard {
 
 impl ReportCard {
     pub fn print(&self) -> String {
+        
+        let grade_str = self.grade.to_string(); // 创建一个String对象
+        let grade_letter = if self.grade > 2.0 && self.student_age < 12 {
+            "A+"
+        } else {
+            &grade_str // 引用之前创建的String对象
+        };
         format!("{} ({}) - achieved a grade of {}",
-            &self.student_name, &self.student_age, &self.grade)
+            &self.student_name, &self.student_age, grade_letter)
     }
 }
 
