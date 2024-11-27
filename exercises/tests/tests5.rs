@@ -22,7 +22,7 @@
 // Execute `rustlings hint tests5` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+
 
 /// # Safety
 ///
@@ -31,8 +31,13 @@ unsafe fn modify_by_address(address: usize) {
     // TODO: Fill your safety notice of the code block below to match your
     // code's behavior and the contract of this function. You may use the
     // comment of the test below as your format reference.
+    
+    // # Safety
+    // 该函数假定 `address` 是一个有效的、可变的 `u32` 值的地址。
+    // 调用者必须确保 `address` 指向的是一个有效的 `u32` 值，并且该值是可变的。
     unsafe {
-        todo!("Your code goes here")
+        let value_ptr = address as *mut u32;
+        *value_ptr = 0xAABBCCDD; // 修改 `u32` 值为 0xAABBCCDD
     }
 }
 
