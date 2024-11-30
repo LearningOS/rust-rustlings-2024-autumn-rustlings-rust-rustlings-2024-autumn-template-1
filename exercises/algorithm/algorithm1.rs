@@ -2,11 +2,12 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
+use std::cmp::Ordering;
 
 #[derive(Debug)]
 struct Node<T> {
@@ -69,16 +70,54 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
-        }
-	}
+	
 }
+
+// 为 merge 方法添加 Ord 和 Clone 约束
+impl<T: Ord + Clone> LinkedList<T> {
+    pub fn merge(list_a: Self, list_b: Self) -> Self {
+        let mut list_c = Self::new();
+        let mut a_ptr = list_a.start;
+        let mut b_ptr = list_b.start;
+
+        // 同时遍历两个链表，比较节点的值，将较小的节点添加到新链表 list_c 中
+        while let (Some(a_next_ptr), Some(b_next_ptr)) = (a_ptr, b_ptr) {
+            unsafe {
+                let a_node = &*a_next_ptr.as_ptr();
+                let b_node = &*b_next_ptr.as_ptr();
+
+                if a_node.val < b_node.val {
+                    list_c.add(a_node.val.clone());
+                    a_ptr = a_node.next;
+                } else {
+                    list_c.add(b_node.val.clone());
+                    b_ptr = b_node.next;
+                }
+            }
+        }
+
+        // 如果链表 a 还有剩余节点，将其全部添加到新链表 list_c 中
+        while let Some(a_next_ptr) = a_ptr {
+            unsafe {
+                let a_node = &*a_next_ptr.as_ptr();
+                list_c.add(a_node.val.clone());
+                a_ptr = a_node.next;
+            }
+        }
+
+        // 如果链表 b 还有剩余节点，将其全部添加到新链表 list_c 中
+        while let Some(b_next_ptr) = b_ptr {
+            unsafe {
+                let b_node = &*b_next_ptr.as_ptr();
+                list_c.add(b_node.val.clone());
+                b_ptr = b_node.next;
+            }
+        }
+
+        list_c
+    }
+}
+
 
 impl<T> Display for LinkedList<T>
 where
