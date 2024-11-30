@@ -7,6 +7,7 @@
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
+use std::cmp::Ordering;
 
 #[derive(Debug)]
 struct Node<T> {
@@ -72,11 +73,18 @@ impl<T> LinkedList<T> {
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
-        }
+		let mut list_c = LinkedList::<T>::new();
+        let mut a_ptr = list_a.start;
+        let mut b_ptr = list_b.start;
+        
+
+		// Self {
+        //     length: 0,
+        //     start: None,
+        //     end: None,
+        // }
+
+        
 	}
 }
 
