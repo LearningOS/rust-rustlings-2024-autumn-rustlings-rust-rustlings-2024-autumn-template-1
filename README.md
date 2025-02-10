@@ -98,6 +98,8 @@ If you get a permission denied message, you might have to exclude the directory 
 
 [![Open Rustlings On Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/?repo=rust-lang%2Frustlings&ref=main)
 
+[![Open in Codeanywhere](https://codeanywhere.com/img/open-in-codeanywhere-btn.svg)](https://app.codeanywhere.com/##https://github.com/rust-lang/rustlings)
+
 ## Manually
 
 Basically: Clone the repository at the latest tag, run `cargo install --path .`.
